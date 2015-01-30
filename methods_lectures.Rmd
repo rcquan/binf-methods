@@ -1,0 +1,454 @@
+---
+title: "Computational Methods II"
+author: "Ryan Quan (rcq2102)"
+date: "January 20, 2015"
+output:
+  html_document:
+    toc: yes
+---
+
+# 05 - Information Theory
+
+## History
+
+The early beginnings of information theory started with lines of communication during the war. People sent messages through what was essentially a "black box" and wanted to know how to decrypt it on the other end with some degree of certainty. Enter information theory.
+
+Seminal paper: [Mathematical Theory of Communication (Shannon)](http://www.greentouch.org/?page=shannons-law-explained)
+
+## Primer
+
+Let's say we want to quantify information content over the channel. Here are some concepts and terms that we want to be familiar with:
+
+* noisy channel, entropy, mutual information
+* source coding theorem
+    * on average, the number of bits required to represent the message / result of an uncertain event is given by its **entropy**. 
+    
+## Entropy
+
+### Entropy of an Outcome
+
+The **information content of an outcome** can be defined as:
+
+$H(X) = -log_2 p(x)$
+
+### Entropy of a Random Variable
+
+The **information content of a random variable** can be defined as:
+
+$H(p) = H(x) = -\sum\limits_{x}p(x)log_2p(x)$
+
+This is essentially the expectation of entropy $E(-log_2p(x))$.
+
+**Extreme Cases**
+
+In cases of complete uncertainty, we have a uniform distribution. As such, the entropy will be the following:
+
+$H(X) = -log_2(1/n)$ - very high!
+
+In cases of complete certainty, the entropy will be zero - very low!
+
+### Joint Entropy of Two Random Variables
+
+$H(X,Y) = -\sum\limits_{x,y} p(x,y)log_2p(x,y)$
+
+$H(X,Y) = -\sum\limits_{x} \sum\limits_{y}$
+
+# 04 - Probability Distributions
+
+Given a distribution, we can apply the following properties:
+
+* **sample**. draw a random variable from the distribution such that if we keep sampling, the objects will follow the distribution
+* **estimate**. given a set of samples, guess which distribution is underlying the sample.
+* **marginalize**. given $p(x,y)$, compute $p(x)$ or $p(y)$
+* **condition**. given $p(x,y)$, compute $p(y|x)$ or $p(x|y)$
+* **expectation**.
+* **variance**.
+
+But often we do not know the underlying probability distribution function. We must estimate using the data and/or make some assumptions about the data.
+
+## Maximum Likelihood Estimation (MLE)
+
+Given dataset D, what is the likelihood of a coin flipping heads?
+
+$\theta^k = argmax P(D|\theta)$
+
+We can use MLE to estimate the model's parameters. Essentially, we are finding the parameter that maximizes the likelihood given the data.
+
+**Example**
+
+Let's say we flipped a coin such that $D = H H T$. What is the probability of flipping heads, $m$?
+
+Since each flip is independent of one another, we can use the following property: 
+
+$$
+(m)(m)(1-m) = 1 \\
+argmax(m^2 - m^3 -1 = 0) \\
+2 - 3m  = 0 \\
+m = 2/3
+$$
+
+We can use MLE, uniform distribution, etc. to estimate the probability distribution and see which one best fits our data. Note that in MLE, **you can have zero probabilities** if an observation does not appear in the training set. This becomes a problem when using the model to predict on a testing set and **can be corrected via smoothing**, e.g. laplace.
+
+**Issues**
+
+* MLE maximizes the data $D$ and doesn't handle unseen events well.
+* MLE doesn't handle uncertainty well, e.g. urn with replacement
+
+### MLE -> Bayesian
+
+MLE with prior $p(\theta)$.
+
+$\theta = argmax p(\theta)p(D|\theta)$
+
+$\theta = argmax \frac{p(\theta|D)}{p(D)}$
+
+Now with the prior included, instead of maximizing data $D$ given the parameter, we are maximizing the parameter given the data.
+
+## Standard Discrete Distributions
+
+### Bernoulli Process
+
+Single experiment with a binary outcome, e.g. a coin toss.
+
+$pr(X = 1) = p$
+
+A Bernoulli process assumes $n$ Bernoulli trials and iid - independentaly identically distributed trials.
+
+From the Bernoulli process, we get a few well-known distributions:
+
+* [Binomial](https://en.wikipedia.org/wiki/Binomial_distribution)
+
+# 03 - More Probability
+
+## Expectation and Variance
+
+Now let's say we have a random variable $X$ that is assigned to a probability distribution $P$ and that $X$ is part of sample space of real numbers.
+
+### Expectation
+
+$E(X) = \sum\limits_{\omega=\Omega} X(\omega)M_p(\omega)$
+
+$E(X) = \int_{\Omega} X dP$
+
+**Properties**
+
+$X_1 \leq X_2; E(X_1) \leq E(X_2)$
+
+$E(aX_1 + bX_2) = aE(X_1) + bE(X_2)$
+
+$E(X_1 X_2)$ does not equal to $E(X_1)E(X_2)$ when $P(X_1)$ and $P(X_2)$
+are independent of each other.
+
+**Example**
+
+Let's say we want to know whether or not we should wait to take the express train or get on the local train now. The express train gets to our destination 5 minutes faster.
+
+We have two outcomes:
+
+* wait for the express for 2 minutes - p = 0.75
+* wait for the express for 10 minutes - p = 0.25
+
+On average, how long should I wait?
+
+First, we should figure out what our random variable $X$ is. In this case, it is the **time gained taking the express**.
+
+$$
+X(2) = 5 - 2 = 3 \\
+X(5) = 5 - 10 = -5 \\ \\
+E(X) = X(2)P(2) + X(10)P(10) \\
+3(0.75) + (-5)(0.25) \\
+= 1 minute.
+$$
+
+On average, we will gain 1 minute of time taking the express so we should wait.
+
+### Variance
+
+How much does an event, on average, deviate from its mean?
+
+$Var(X) = E((X - E(X)^2))$
+
+$Var(X) = E(X^2) - E(X)^2$
+
+### Co-Variance
+
+How much two random variables change together.
+
+$Cov(X, Y) = E - [(X-E(X))(Y-E(Y))]$
+
+$Cov(X, Y) = E_{xy}(XY) - E(X)E(Y)$
+
+# Lab 1 - Intro to R
+
+## Data Types
+
+* 1-D
+* 2-D
+* Homogeneous
+* Heterogeneous
+
+1-D / Homogeneous - vector  
+2-D / Homogeneous - matrix
+
+1-D / Heterogenous - list  
+2-D / Heterogenous - data frame
+
+## CRUD
+
+### Create
+
+```{r, eval=FALSE}
+## vector
+c(1, 2, 3, 4)
+vector(length = 100)
+
+## matrix
+matrix(data, nrow = n, ncol = m, byrow = FALSE)
+
+## list
+list(name = "Ryan", age = 100)
+
+## data frame
+data.frame(names = "Ryan", age = 100)
+```
+
+### Read (Access)
+
+For vector index, you can use one of the following:
+
+1. numeric
+2. named access
+3. boolean vectors
+
+For lists, we can do one of the following:
+
+```{r, eval=FALSE}
+l$name # name
+l[["name"]] # gets you the object stored in that position
+l["name"] # gets you the sub-list
+```
+
+### Update
+
+```{r, eval=FALSE}
+## vectors
+c(vec, 1, 2, 3, 4)
+
+## matrices
+rbind(mat, row)
+cbind(mat, col)
+
+## lists
+l[["newfield"]]
+```
+
+### Destroy
+
+For vectors and matrices, just sub-select and get a new vector or matrix.
+
+```{r, eval=FALSE}
+## lists
+l[[NULL]]
+```
+
+## Object-Oriented Programming
+
+## Programming Constructs - FUNCTIONS
+
+### S4 Object
+
+1. "Real" object implementation
+2. Named records with slots
+3. Obj@Slot syntax
+4. Dispatch from call tables
+
+### S3 Object
+
+1. List with class attribute
+2. Name-based dispatch of generics
+
+### Applying Functions
+
+R is built around vectors so function calls are broadcasted across vectors. 
+
+# 02 - Probability Theory
+
+## Axioms
+
+$$
+P(A \cup B) + P(B) - P(A \cap B) \\
+P(True) = 1 \\
+P(False) = 0
+$$
+
+**Example**
+
+$P(A') = 1 - P(A)$  
+
+**Proof**
+
+$P(A \cup A') = P(A) + P(A') - P(A \cap A')$  
+$P(A \cup A') = P(A) + P(A') - P(False)$  
+$P(A \cup A') = P(A) + P(A')$
+
+## Multi-Valued Random Variable
+
+A can take several disjoint values $v_1...v_k$.
+
+$P(A = v_i \cap A = v_j) = 0$
+
+The events that generate $A = v_1$ are disjoint.
+
+The likelihood of independent events is equivalent to the sum of their likelihoods.
+
+**Example**
+
+$P(A = v_1 \cup...\cup A = v_i) = \sum_{j=1}^i P(A = v_j)$
+
+**Proof**
+
+$$
+P(A = v_1 \cup...\cup A = v_i) = P(A = v_1) + P(A = v_2 \cup...\cup A = v_i)
+- P(A = v_1 \cap (A = v_2 \cup...\cup A = v_i)) \\
+= P(A = v_1) + P(A = v_2) + P(A = v_3 \cup...\cup A = v_i)
+$$
+
+## Conditional Event
+
+$P(A|B) = \frac{P(A \cap B)}{P(B)}; P(B \neq 0)$
+
+$P(\omega|B) = \frac{P(\omega \cap B)}{P(B)} = \frac{P(B)}{P(B)} = 1$
+
+where $P(A|B) \geq 0$
+
+Sanity Check: Conditional probability is a probability.
+
+$$
+A_1, A_2 disjoint P(A_1 \cup A_2 | B) \\
+= \frac{P((A_1 \cup A_2) \cap B)}{P(B)} \\
+= \frac{P((A_1 \cap B) \cup (A_2 \cap B))}{P(B)} \\
+= \frac{P(A_1 \cap B) + P(A_2 \cap B)}{P(B)} \\
+= P(A_1|B) + P(A_2|B)
+$$
+
+## Chain Rule
+
+Will be widely used throughout this class.
+
+$P(A \cap B) = P(A|B)P(B)$
+
+$P(A_1 \cap A_2 \cap... A_n) = P(A_1)P(A_2|A_1)...P(A_n|A_1A_2...A_n)$
+
+**Proof**
+
+Use the definition of conditional probability to simplify the equation.
+
+## Total Probability Theorem
+
+Let $A_1...A_n$ disjoint, from a position of $\Omega$ and $P(A_1) > 0$
+
+$P(B) = P(A_1 \cap B) + ... + P(A_n \cap B)$
+
+$P(B) = P(B|A_1)P(A_1) + ... + P(B|A_n)P(A_n)$
+
+The likelihood of event B is equal to the sum of all conditional probabilities in a given space. You can think of it as the weighted average of the conditional events.
+
+## Bayes Rule
+
+$P(Y|X) = \frac{P(X|Y)P(Y)}{P(X)}$
+
+Proof: Use the definition of conditional probability to simplify the equation.
+
+$P(Y|X_1)$ is the likelihood of observing Y if X_1 is present (posterior).
+$P(X_1|Y)$ is the likelihood of observing X_1 if Y is present (likelihood).
+$P(X_1)$ is the prior probability.
+
+## Independence
+
+$P(A|B) = P(A) <=> A \perp B$
+
+## Conditional Independence
+
+$P(A \cap B | C) = P(A|C)P(B|C)$ where $A \perp B | C$
+
+## Discrete Probability Space
+
+$\omega$: sample space, countable, finite
+$M_p$: probability mass function (pmf)
+
+$M_p: \Omega <=> R^+$
+
+$M_p(\omega) = P({|\omega})$
+
+**Properties**
+
+$M_p(\omega) \in [0,1]$
+
+Mass probability function is in the set [0, 1].
+
+$\sum\limits_{\omega} M_p = 1$
+
+The sum of the mass probability functions are equal to 1.
+
+**Example**
+
+Imagine you have 4 elements: A, T, C, G. 
+
+* You have a 1-scanner that reads one element at a time. 
+* A k-scanner reads k elements at a time and its scans are independent of one another.
+* The odds of picking a blank "_" = $1/9$
+* The scan is not partial to any individual element.
+
+Question: (2-scanners) What is the probability of having a non-homogenous scan with 2+ letters ("_" doesn't count). 
+
+Answer: Since the scanners are independent of one another, we can assume independence and say that the probability of a scan picking up A, C, T, or G is the same. Since the scanner is not partial to any particular base, we can use the property above and sum the mass probability functions to equal to 1. 
+
+$$
+1/9 + 4m = 1 \\
+m = 2/9 \\
+Pr(AT) = Pr(A)Pr(T) \\
+= 2/9 * 2/9
+= 4/81
+$$
+
+# 01- Introduction
+
+## Projects
+
+Must submit a letter of intent and do one of the following:
+
+1. Use a dataset provided for you
+    * Online Health Community (10 years, 120K users)
+        * Sentiment Analysis
+        * Topic Modeling
+    * Electronic Health Records (26K, messy, ICU clinical)
+    * Comparable Corpus of PubMed Abstracts (with controls)
+2. Use a dataset that you already have
+
+Some sample research questions:
+
+* Automated Topic Modeling
+* Journalism / PubMed Abstracts in Clinical Journals
+* Opinions on Complementary and Alternative Medicine in an OHC
+
+## Grading
+
+* 10% - Class Participation
+* 25% - Labs (Due Friday 11:59PM)
+* 25% - Midterm
+* 40% - Project2
+
+## Outline
+
+* Analysis of Large Datasets
+* Machine Learning / Data Mining
+* How to Inject Knowledge into Datasets
+
+## Examples of Healthcare Analysis
+
+Quality of Care
+
+1. Length of Stay
+2. Readmission Rates
+    * predict those who are likely to return to the hospital
+    
