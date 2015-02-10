@@ -69,6 +69,39 @@ img {
 
 <div id="TOC">
 <ul>
+<li><a href="#association-rules">08 - Association Rules</a><ul>
+<li><a href="#a-priori-algorithm-1994">A-priori Algorithm (1994)</a><ul>
+<li><a href="#key-terms">Key Terms</a></li>
+<li><a href="#algorithm">Algorithm</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#more-information-theory">07 - More Information Theory</a><ul>
+<li><a href="#conditional-entropy">Conditional Entropy</a></li>
+<li><a href="#cross-entropy">Cross Entropy</a></li>
+<li><a href="#kl-divergence-relative-entropy">KL Divergence (Relative Entropy)</a><ul>
+<li><a href="#two-uses-of-kl-divergence">Two Uses of KL Divergence</a></li>
+</ul></li>
+<li><a href="#gibbs-inequality">Gibb’s Inequality</a></li>
+<li><a href="#absolute-discounting">Absolute Discounting</a></li>
+<li><a href="#mutual-information">Mutual Information</a></li>
+</ul></li>
+<li><a href="#language-modeling">06 - Language Modeling</a><ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#estimating-probabilities">Estimating Probabilities</a></li>
+<li><a href="#evaluation-and-perplexity">Evaluation and Perplexity</a></li>
+<li><a href="#basic-smoothing">Basic Smoothing</a><ul>
+<li><a href="#add-one-laplace">Add-one (Laplace)</a></li>
+<li><a href="#backoff">Backoff</a></li>
+<li><a href="#interpolation">Interpolation</a></li>
+<li><a href="#add-k">Add-k</a></li>
+<li><a href="#unigram-prior-smoothing">Unigram prior smoothing</a></li>
+</ul></li>
+<li><a href="#advanced-smoothing">Advanced Smoothing</a><ul>
+<li><a href="#good-turing">Good-Turing</a></li>
+<li><a href="#kneser-ney">Kneser-Ney</a></li>
+<li><a href="#witten-bell">Witten-Bell</a></li>
+</ul></li>
+</ul></li>
 <li><a href="#information-theory">05 - Information Theory</a><ul>
 <li><a href="#history">History</a></li>
 <li><a href="#primer">Primer</a></li>
@@ -119,7 +152,7 @@ img {
 <li><a href="#conditional-independence">Conditional Independence</a></li>
 <li><a href="#discrete-probability-space">Discrete Probability Space</a></li>
 </ul></li>
-<li><a href="#introduction">01- Introduction</a><ul>
+<li><a href="#introduction-1">01- Introduction</a><ul>
 <li><a href="#projects">Projects</a></li>
 <li><a href="#grading">Grading</a></li>
 <li><a href="#outline">Outline</a></li>
@@ -128,6 +161,205 @@ img {
 </ul>
 </div>
 
+<div id="association-rules" class="section level1">
+<h1>08 - Association Rules</h1>
+<p>Just a reminder: the relationship between mutual information and KL-divergence.</p>
+<p><span class="math">\(I(X;Y) = \sum\limits_{x,y} p(x,y) log \frac{p(x,y)}{p(x)p(y)} = D_{KL}(p(x,y)||p(x)p(y))\)</span></p>
+<p>Dataset <span class="math">\(n x p\)</span> matrix:</p>
+<ul>
+<li>n = nb of objects</li>
+<li>p = nb of features, attributes</li>
+</ul>
+<p><strong>Uses</strong></p>
+<ul>
+<li>Exploratory Data Analysis</li>
+<li>Predicitve Modeling</li>
+<li>Discourse Patterns</li>
+</ul>
+<div id="a-priori-algorithm-1994" class="section level2">
+<h2>A-priori Algorithm (1994)</h2>
+<p><a href="http://nikhilvithlani.blogspot.com/2013/07/apriori-algorithm-for-data-mining-made.html">Link</a></p>
+<ul>
+<li>Task: rule pattern discovery</li>
+<li>Scores: is a function of <strong>support</strong> and <strong>confidence</strong></li>
+<li>Search: breadth-first search and pruning</li>
+<li>Rule: lhs ==&gt; rhs</li>
+<li>Data: Categorical</li>
+</ul>
+<p><span class="math">\(I = (i_1...i_m)\)</span> items</p>
+<p><span class="math">\(D =\)</span> set of transactions (<span class="math">\(n x p\)</span> matrix)</p>
+<p>Transaction <span class="math">\(T\)</span> is a set of items in where <span class="math">\(T\)</span> contains <span class="math">\(X\)</span> if <span class="math">\(X \leq T\)</span></p>
+<p>Association of <span class="math">\(X\)</span> ==&gt; <span class="math">\(Y\)</span></p>
+<p><span class="math">\(X\)</span> is a subset of <span class="math">\(I\)</span>, <span class="math">\(Y\)</span> is a subset of <span class="math">\(I\)</span>; <span class="math">\(X \cap Y = 0\)</span></p>
+<div id="key-terms" class="section level3">
+<h3>Key Terms</h3>
+<p><strong>Confidence</strong> of a rule = c, where c the number of times X and Y are purchased divided by the the number of times X is purchased alone; <span class="math">\(\frac{support(lhs, rhs)}{support(lhs)}\)</span></p>
+<p><strong>Lift</strong> of a rule is <span class="math">\(\frac{support(lhs)}{support(lhs)support(rhs)}\)</span></p>
+<p><strong>Support</strong> of rule = s, where s is the % of transactions in D containing X.</p>
+<p><strong>Itemset</strong> is a set of items.</p>
+<p><strong>k-itemset</strong> is a set of k items.</p>
+<p><strong>Frequent k-itemset</strong> is a k-item set with high support.</p>
+</div>
+<div id="algorithm" class="section level3">
+<h3>Algorithm</h3>
+<p>The naive algorithm would require us to iterate through each itemset, which would require us to enumerate all itemsets (<span class="math">\(2^n\)</span>).</p>
+<p><span class="math">\(C_k\)</span>: candidate itemsets of size k</p>
+<p><span class="math">\(F_k\)</span>; frequent itemsets of size k</p>
+<p><span class="math">\(F_1\)</span> = {frequent items}</p>
+<pre><code>for (k=1; $F_k$ != 0, k++) {
+    $C_{k+1}$ = generate candidate ($F_k$)
+    for each transaction $T$ in $D$
+        increment count of $C_{k+1}$ if C_{k+1} is a subset of $T$
+    $F_{k+1}$ = candidates in $C_{k+1}$ with high frequency
+return set of $F_k$
+}</code></pre>
+<pre><code>for each itemset 
+    s ==&gt; (l-s) if s is a non-empty subset of itemset
+    compute confidence/lift and prune</code></pre>
+<p><strong>Example</strong></p>
+<ol style="list-style-type: decimal">
+<li>Start with transaction records and set minimum support and minimum confidence parameters.</li>
+<li>Find support for item sets for k = 1; remove from candidate list those with support less than theta.</li>
+<li>Repeat process for k = 2, 3… (can’t use sets that have already been discarded)</li>
+<li>Generate full itemset list. Calculate confidence to make candidate rules.</li>
+<li>Use minimum confidence to prune rules, keeping rules with minconf &gt;= 0.75</li>
+</ol>
+</div>
+</div>
+</div>
+<div id="more-information-theory" class="section level1">
+<h1>07 - More Information Theory</h1>
+<div id="conditional-entropy" class="section level2">
+<h2>Conditional Entropy</h2>
+<p><span class="math">\(H(Y|X) = \sum\limits_{x} p(x)H(Y|X=x)\)</span></p>
+<p><span class="math">\(H(Y|X) = -\sum\limits_{x}\sum\limits_{y} p(y|x) logp(y|x)\)</span></p>
+<p>How much info is still needed to convey about Y if X is known?</p>
+<p><span class="math">\(H(X,Y) = H(X) + H(Y|X)\)</span></p>
+<p><span class="math">\(H(X_1...X_n) = H(X_1) + ... + H(X_n|X_1...X_{n-1})\)</span></p>
+</div>
+<div id="cross-entropy" class="section level2">
+<h2>Cross Entropy</h2>
+<p>The cross entropy between two probability distributions over the same underlying set of events measures the average number of bits needed to identify an event drawn form the set, if a coding scheme is used that is optimized for an “unnatural” probability distribution q, rather than the “true” distribution p.</p>
+<p><span class="math">\(H(p,q) = E_p[-log q] = H(p) + D_{KL}(p||q)\)</span></p>
+</div>
+<div id="kl-divergence-relative-entropy" class="section level2">
+<h2>KL Divergence (Relative Entropy)</h2>
+<p>KL stands for Lullback Leibler.</p>
+<p>Let P,Q be two probability distributions over the same sample space <span class="math">\(\Omega\)</span>.</p>
+<p><span class="math">\(D_{KL}(P||Q) = \sum\limits_{x} p(x)log\frac{p(x)q(x)} = E_p(log\frac{p}{q})\)</span></p>
+<p>Specifically, the Kullback–Leibler divergence of <span class="math">\(Q\)</span> from <span class="math">\(P\)</span>, denoted <span class="math">\(D_{KL}(P‖Q)\)</span>, is a measure of the information lost when <span class="math">\(Q\)</span> is used to approximate <span class="math">\(P\)</span>.</p>
+<p>Typically <span class="math">\(P\)</span> represents the “true” distribution of data, observations, or a precisely calculated theoretical distribution. The measure <span class="math">\(Q\)</span> typically represents a theory, model, description, or approximation of <span class="math">\(P\)</span>.</p>
+<p><span class="math">\(D_{KL}(P||Q) = \sum\limits_{x} p(x)log\frac{p(x)q(x)} = - \sum\limits_{x}p(x)logq(x) + \sum\limits_{x}p(x)log(p(x)\)</span></p>
+<p>KL Divergence of Q from P = Cross Entropy(P,Q) - Entropy(P)</p>
+<p>Note that <span class="math">\(D_{KL}\)</span> is not symmetric!</p>
+<div id="two-uses-of-kl-divergence" class="section level3">
+<h3>Two Uses of KL Divergence</h3>
+<ol style="list-style-type: decimal">
+<li>How different 2 distributions are from each other?</li>
+<li>Estimate validity of model compared to truth</li>
+</ol>
+<p><strong>How different 2 distributions are from each other?</strong></p>
+</div>
+</div>
+<div id="gibbs-inequality" class="section level2">
+<h2>Gibb’s Inequality</h2>
+<p><span class="math">\(D_{KL}(P||Q) \geq 0\)</span></p>
+<p>Equals 0 if <span class="math">\(P = Q\)</span>.</p>
+<p><span class="math">\(x_1: p_1...x_n:p_n\)</span></p>
+<p><span class="math">\(x_1:q_1...x_n:q_n\)</span></p>
+<p><span class="math">\(D_{KL}(P||Q) = \sum\limits_{i=1}^{n}p_i log\frac{p_i}{q_i}\)</span></p>
+<p>However, note that if <span class="math">\(p_1 \neq 0\)</span> and <span class="math">\(q_i = 0\)</span>, the KL Divergence converges to infinity. Thus, we need to account for unseen events by <strong>smoothing.</strong></p>
+</div>
+<div id="absolute-discounting" class="section level2">
+<h2>Absolute Discounting</h2>
+<p>Another method for smoothing.</p>
+<ol style="list-style-type: decimal">
+<li>Define <span class="math">\(E\)</span> = 0.0001</li>
+<li><span class="math">\(SP = {a, b, c}, SQ = {a, b, d}, SU = {a, b, c, d}\)</span></li>
+<li>Smoothed versions of p <span class="math">\(\propto\)</span> q</li>
+</ol>
+<p><span class="math">\(p_i = p_i-p_c\)</span> if <span class="math">\(i \in SP\)</span> <span class="math">\(p_i = E\)</span> otherwise</p>
+<p>such that $p’_i = 1.</p>
+<p><strong>Estimate validity of model compared to truth</strong></p>
+<p><span class="math">\(D_{KL}(P||Q) = H(P,q) - H(P)\)</span></p>
+<p>Cross-entropy is the <strong>perplexity</strong> of a dataset. Goal is to find Q that minimizes the <span class="math">\(D_{KL}\)</span> – Q that yields the lowest cross entropy.</p>
+<p>If <span class="math">\(D_{KL}(P||model_1) &lt; D_{KL}(P||model_2)\)</span>, model 1 is better!</p>
+</div>
+<div id="mutual-information" class="section level2">
+<h2>Mutual Information</h2>
+<p>H(X,Y) = H(X) + H(Y|X) = H(Y) + H(X|Y)</p>
+<p>H(X) = H(X|Y) = H(Y) - H(Y|X) = I(X;Y) = I(Y;X)</p>
+<p><img src="data:image/png;base64,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" alt="mutualinfo" /></p>
+</div>
+</div>
+<div id="language-modeling" class="section level1">
+<h1>06 - Language Modeling</h1>
+<p>Link to this slide <a href="03_languagemodeling.pdf">here</a>. Link to Dan Jurafsky’s NLP slides <a href="http://web.stanford.edu/~jurafsky/NLPCourseraSlides.html">here</a></p>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>The goal of a probabilistic langugae model is to <strong>compute the probability of a sentence or sequence of words.</strong></p>
+<p>We can compute the joint probability of words by relying on the <strong>Chain Rule of Probability.</strong></p>
+<p><span class="math">\(P(x_1,x_2,x_3,...,x_n) = P(x_1)P(x_2|x_1)P(x_3|x_1,x_2)...P(x_n|x_1...x_{n-1})\)</span></p>
+<p>However, computing joint probabilities is not practical since we can’t keep track of all possible histories of each word. We thus use the <strong>Markov Assumption</strong> to approximate each component in the product.</p>
+<p><span class="math">\(P(w_i|w_1w_2...w_n) \approx \prod\limits_{i} P(w_i|w_{i-k}...w_{i-1})\)</span></p>
+<p>In the simplest case, we have the <strong>unigram model</strong> in which we approximate the joint probability of all words with the product of the the probabilities of each word. <strong>Bigram model</strong> conditions on the previous word.</p>
+</div>
+<div id="estimating-probabilities" class="section level2">
+<h2>Estimating Probabilities</h2>
+<p><span class="math">\(P(w_i|w_{i-1}) = \frac{c(w_i, w_{i-1})}{c(w_{i-1})}\)</span></p>
+<p>Essentially, we are normalizing the counts of the bigrams with the counts of the unigrams. Remember to do everything in log to avoid underflows.</p>
+<p><a href="http://googleresearch.blogspot.com/2006/08/all-our-n-gram-are-belong-to-you.html">Google N-Gram Release, August 2006</a></p>
+</div>
+<div id="evaluation-and-perplexity" class="section level2">
+<h2>Evaluation and Perplexity</h2>
+<p><strong>Extrinsic</strong> evaluation is the best, but very time consuming. <strong>Intrinsic</strong> evaluation is faster but less accurate. Enter perplexity.</p>
+<p><strong>Perplexity</strong> is the inverse probability of the test set, normalized by the number of words. The best language model is one that best predicts an unseen test site. <strong>Minimizing perplexity is the same as maximizing probability.</strong></p>
+</div>
+<div id="basic-smoothing" class="section level2">
+<h2>Basic Smoothing</h2>
+<p>When we sparse statistics, we can steal probability mass to generalize better. Essentially, we are trying to <strong>prevent zero probabilities.</strong></p>
+<div id="add-one-laplace" class="section level3">
+<h3>Add-one (Laplace)</h3>
+<p>Add-one estimation. Pretend we saw each word one more time than we did. Here is an example for bigrams:</p>
+<p><span class="math">\(P*(w_n|w_{n-1}) = \frac{c(w_{n-1}, w_n) + 1}{c(w_{n-1}) + V}\)</span></p>
+<p>Laplace smoothing is typically used for text classification and in domains where the numbers of zeros aren’t too huge. Otherwise, there are better methods, especially for n-grams.</p>
+<p>But sometimes it helps to use **less* context. We can condition on less context for contexts you haven’t learned about using other methods.</p>
+</div>
+<div id="backoff" class="section level3">
+<h3>Backoff</h3>
+<p>In <strong>backoff</strong>, we use trigrams if we have good evidence - otherwise bigram - otherwise unigram. In <strong>stupid backoff</strong> there is no discounting - just use relative frequencies. Use when you have very large N-grams like the web.</p>
+</div>
+<div id="interpolation" class="section level3">
+<h3>Interpolation</h3>
+<p>In <strong>interpolation</strong>, we can mix unigram, bigram, trigram and weight them with <span class="math">\(\lambda\)</span>. Use cross-validaiton to determine the <span class="math">\(\lambda\)</span> that maximizes the probability of the cross-validation set. Most commonly used method is the <strong>extended interpolated kneser-ney</strong>.</p>
+</div>
+<div id="add-k" class="section level3">
+<h3>Add-k</h3>
+<p>Maybe add-one is a little too much. We can get a more general formulation:</p>
+<p><span class="math">\(P_{add-k}(w_i|w_{i-1}) = \frac{c(w_{i-1}, w_i) + k}{c(w_{i-1}) + kV}\)</span></p>
+</div>
+<div id="unigram-prior-smoothing" class="section level3">
+<h3>Unigram prior smoothing</h3>
+<p><span class="math">\(P_{unigramprior}(w_i|w_{i-1}) = \frac{c(w_{i-1}, w_i) + mP(w_i)}{c(w_{i-1}) + m}\)</span></p>
+</div>
+</div>
+<div id="advanced-smoothing" class="section level2">
+<h2>Advanced Smoothing</h2>
+<p>Use the count of things we’ve seen once to help estimate the count of things we’ve never seen before.</p>
+<p>For example, let’s say we were talking about fish and mentioned carp, perch, whitefish, salmon. The probability of a new fish species occuring can be estimated using the probability of “things-we-saw-once”. Assuming so, how likely is it that the next speciies is “trout”?</p>
+<div id="good-turing" class="section level3">
+<h3>Good-Turing</h3>
+<p>Good–Turing frequency estimation is a statistical technique for estimating the probability of encountering an object of a hitherto unseen species, given a set of past observations of objects from different species. (In drawing balls from an urn, the ‘objects’ would be balls and the ‘species’ would be the distinct colors of the balls (finite but unknown in number).</p>
+<p><a href="https://en.wikipedia.org/wiki/Good%E2%80%93Turing_frequency_estimation">Wikipedia</a></p>
+</div>
+<div id="kneser-ney" class="section level3">
+<h3>Kneser-Ney</h3>
+</div>
+<div id="witten-bell" class="section level3">
+<h3>Witten-Bell</h3>
+</div>
+</div>
+</div>
 <div id="information-theory" class="section level1">
 <h1>05 - Information Theory</h1>
 <div id="history" class="section level2">
@@ -459,7 +691,7 @@ Pr(AT) = Pr(A)Pr(T) \\
 \]</span></p>
 </div>
 </div>
-<div id="introduction" class="section level1">
+<div id="introduction-1" class="section level1">
 <h1>01- Introduction</h1>
 <div id="projects" class="section level2">
 <h2>Projects</h2>

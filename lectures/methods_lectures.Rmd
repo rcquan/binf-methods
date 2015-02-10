@@ -7,6 +7,260 @@ output:
     toc: yes
 ---
 
+# 08 - Association Rules
+
+Just a reminder: the relationship between mutual information and KL-divergence.
+
+$I(X;Y) = \sum\limits_{x,y} p(x,y) log \frac{p(x,y)}{p(x)p(y)} = D_{KL}(p(x,y)||p(x)p(y))$
+
+Dataset $n x p$ matrix:
+
+* n = nb of objects
+* p = nb of features, attributes
+    
+**Uses**
+
+* Exploratory Data Analysis
+* Predicitve Modeling
+* Discourse Patterns
+
+## A-priori Algorithm (1994)
+
+[Link](http://nikhilvithlani.blogspot.com/2013/07/apriori-algorithm-for-data-mining-made.html)
+
+* Task: rule pattern discovery
+* Scores: is a function of **support** and **confidence**
+* Search: breadth-first search and pruning
+* Rule: lhs ==> rhs
+* Data: Categorical
+
+$I = (i_1...i_m)$ items
+
+$D =$ set of transactions ($n x p$ matrix)
+
+Transaction $T$ is a set of items in where $T$ contains $X$ if $X \leq T$
+
+Association of $X$ ==> $Y$
+
+$X$ is a subset of  $I$, $Y$ is a subset of $I$; $X \cap Y = 0$
+
+### Key Terms
+
+**Confidence** of a rule = c, where c the number of times X and Y are purchased divided by the the number of times X is purchased alone; $\frac{support(lhs, rhs)}{support(lhs)}$
+
+**Lift** of a rule is $\frac{support(lhs)}{support(lhs)support(rhs)}$
+
+**Support** of rule = s, where s is the % of transactions in D containing X.
+
+**Itemset** is a set of items.
+
+**k-itemset** is a set of k items.
+
+**Frequent k-itemset** is a k-item set with high support.
+
+### Algorithm
+
+The naive algorithm would require us to iterate through each itemset, which would require us to enumerate all itemsets ($2^n$).
+
+$C_k$: candidate itemsets of size k
+
+$F_k$; frequent itemsets of size k
+
+$F_1$ = {frequent items}
+
+```
+for (k=1; $F_k$ != 0, k++) {
+    $C_{k+1}$ = generate candidate ($F_k$)
+    for each transaction $T$ in $D$
+        increment count of $C_{k+1}$ if C_{k+1} is a subset of $T$
+    $F_{k+1}$ = candidates in $C_{k+1}$ with high frequency
+return set of $F_k$
+}
+```
+
+```
+for each itemset 
+    s ==> (l-s) if s is a non-empty subset of itemset
+    compute confidence/lift and prune
+```
+
+**Example**
+
+1. Start with transaction records and set minimum support and minimum confidence parameters.
+2. Find support for item sets for k = 1; remove from candidate list those with support less than theta.
+3. Repeat process for k = 2, 3… (can’t use sets that have already been discarded)
+4. Generate full itemset list. Calculate confidence to make candidate rules.
+5. Use minimum confidence to prune rules, keeping rules with minconf >= 0.75
+
+# 07 - More Information Theory
+
+## Conditional Entropy
+
+$H(Y|X) = \sum\limits_{x} p(x)H(Y|X=x)$
+
+$H(Y|X) = -\sum\limits_{x}\sum\limits_{y} p(y|x) logp(y|x)$
+
+How much info is still needed to convey about Y if X is known?
+
+$H(X,Y) = H(X) + H(Y|X)$
+
+$H(X_1...X_n) = H(X_1) + ... + H(X_n|X_1...X_{n-1})$
+
+## Cross Entropy
+
+The cross entropy between two probability distributions over the same underlying set of events measures the average number of bits needed to identify an event drawn form the set, if a coding scheme is used that is optimized for an "unnatural" probability distribution q, rather than the "true" distribution p. 
+
+$H(p,q) = E_p[-log q] = H(p) + D_{KL}(p||q)$
+
+## KL Divergence (Relative Entropy)
+
+KL stands for Lullback Leibler.
+
+Let P,Q be two probability distributions over the same sample space $\Omega$.
+
+$D_{KL}(P||Q) = \sum\limits_{x} p(x)log\frac{p(x)q(x)} = E_p(log\frac{p}{q})$
+
+Specifically, the Kullback–Leibler divergence of $Q$ from $P$, denoted $D_{KL}(P‖Q)$, is a measure of the information lost when $Q$ is used to approximate $P$. 
+
+Typically $P$ represents the "true" distribution of data, observations, or a precisely calculated theoretical distribution. The measure $Q$ typically represents a theory, model, description, or approximation of $P$.
+
+$D_{KL}(P||Q) = \sum\limits_{x} p(x)log\frac{p(x)q(x)} = - \sum\limits_{x}p(x)logq(x) + \sum\limits_{x}p(x)log(p(x)$
+
+KL Divergence of Q from P = Cross Entropy(P,Q) - Entropy(P)
+
+Note that $D_{KL}$ is not symmetric!
+
+### Two Uses of KL Divergence
+
+1. How different 2 distributions are from each other?
+2. Estimate validity of model compared to truth
+
+**How different 2 distributions are from each other?**
+
+## Gibb's Inequality
+
+$D_{KL}(P||Q) \geq 0$
+
+Equals 0 if $P = Q$.
+
+$x_1: p_1...x_n:p_n$
+
+$x_1:q_1...x_n:q_n$
+
+$D_{KL}(P||Q) = \sum\limits_{i=1}^{n}p_i log\frac{p_i}{q_i}$
+
+However, note that if $p_1 \neq 0$ and $q_i = 0$, the KL Divergence converges to infinity. Thus, we need to account for unseen events by **smoothing.**
+
+## Absolute Discounting
+
+Another method for smoothing.
+
+1. Define $E$ = 0.0001
+2. $SP = {a, b, c}, SQ = {a, b, d}, SU = {a, b, c, d}$
+3. Smoothed versions of p $\propto$ q
+
+$p_i = p_i-p_c$ if $i \in SP$
+$p_i = E$ otherwise
+
+such that $\sum p'_i = 1.
+
+**Estimate validity of model compared to truth**
+
+$D_{KL}(P||Q) = H(P,q) - H(P)$
+
+Cross-entropy is the **perplexity** of a dataset. Goal is to find Q that minimizes the $D_{KL}$ -- Q that yields the lowest cross entropy. 
+
+If $D_{KL}(P||model_1) < D_{KL}(P||model_2)$, model 1 is better!
+
+## Mutual Information
+
+H(X,Y) = H(X) + H(Y|X) = H(Y) + H(X|Y)
+
+H(X) = H(X|Y) = H(Y) - H(Y|X) = I(X;Y) = I(Y;X)
+
+![mutualinfo](http://www.quantiki.org/mediawiki/images/d/dd/Classinfo.png)
+
+# 06 - Language Modeling
+
+Link to this slide [here](03_languagemodeling.pdf).
+Link to Dan Jurafsky's NLP slides [here](http://web.stanford.edu/~jurafsky/NLPCourseraSlides.html)
+
+## Introduction
+
+The goal of a probabilistic langugae model is to **compute the probability of a sentence or sequence of words.**
+
+We can compute the joint probability of words by relying on the **Chain Rule of Probability.**
+
+$P(x_1,x_2,x_3,...,x_n) = P(x_1)P(x_2|x_1)P(x_3|x_1,x_2)...P(x_n|x_1...x_{n-1})$
+
+However, computing joint probabilities is not practical since we can't keep track of all possible histories of each word. We thus use the **Markov Assumption** to approximate each component in the product.
+
+$P(w_i|w_1w_2...w_n) \approx \prod\limits_{i} P(w_i|w_{i-k}...w_{i-1})$
+
+In the simplest case, we have the **unigram model** in which we approximate the joint probability of all words with the product of the the probabilities of each word. **Bigram model** conditions on the previous word.
+
+## Estimating Probabilities
+
+$P(w_i|w_{i-1}) = \frac{c(w_i, w_{i-1})}{c(w_{i-1})}$
+
+Essentially, we are normalizing the counts of the bigrams with the counts of the unigrams. Remember to do everything in log to avoid underflows.
+
+[Google N-Gram Release, August 2006](http://googleresearch.blogspot.com/2006/08/all-our-n-gram-are-belong-to-you.html)
+
+## Evaluation and Perplexity
+
+**Extrinsic** evaluation is the best, but very time consuming. **Intrinsic** evaluation is faster but less accurate. Enter perplexity.
+
+**Perplexity** is the inverse probability of the test set, normalized by the number of words. The best language model is one that best predicts an unseen test site. **Minimizing perplexity is the same as maximizing probability.**
+
+## Basic Smoothing
+
+When we sparse statistics, we can steal probability mass to generalize better. Essentially, we are trying to **prevent zero probabilities.**
+
+### Add-one (Laplace)
+
+Add-one estimation. Pretend we saw each word one more time than we did. Here is an example for bigrams:
+
+$P*(w_n|w_{n-1}) = \frac{c(w_{n-1}, w_n) + 1}{c(w_{n-1}) + V}$
+
+Laplace smoothing is typically used for text classification and in domains where the numbers of zeros aren't too huge. Otherwise, there are better methods, especially for n-grams.
+
+But sometimes it helps to use **less* context. We can condition on less context for contexts you haven't learned about using other methods.
+
+### Backoff
+
+In **backoff**, we use trigrams if we have good evidence - otherwise bigram - otherwise unigram. In **stupid backoff** there is no discounting - just use relative frequencies. Use when you have very large N-grams like the web.
+
+### Interpolation
+
+In **interpolation**, we can mix unigram, bigram, trigram and weight them with $\lambda$. Use cross-validaiton to determine the $\lambda$ that maximizes the probability of the cross-validation set. Most commonly used method is the **extended interpolated kneser-ney**.
+
+### Add-k
+
+Maybe add-one is a little too much. We can get a more general formulation:
+
+$P_{add-k}(w_i|w_{i-1}) = \frac{c(w_{i-1}, w_i) + k}{c(w_{i-1}) + kV}$
+
+### Unigram prior smoothing
+
+$P_{unigramprior}(w_i|w_{i-1}) = \frac{c(w_{i-1}, w_i) + mP(w_i)}{c(w_{i-1}) + m}$
+
+## Advanced Smoothing
+
+Use the count of things we've seen once to help estimate the count of things we've never seen before.
+
+For example, let's say we were talking about fish and mentioned carp, perch, whitefish, salmon. The probability of a new fish species occuring can be estimated using the probability of "things-we-saw-once". Assuming so, how likely is it that the next speciies is "trout"?
+
+### Good-Turing
+
+Good–Turing frequency estimation is a statistical technique for estimating the probability of encountering an object of a hitherto unseen species, given a set of past observations of objects from different species. (In drawing balls from an urn, the 'objects' would be balls and the 'species' would be the distinct colors of the balls (finite but unknown in number).
+
+[Wikipedia](https://en.wikipedia.org/wiki/Good%E2%80%93Turing_frequency_estimation)
+
+### Kneser-Ney
+
+### Witten-Bell
+
 # 05 - Information Theory
 
 ## History
