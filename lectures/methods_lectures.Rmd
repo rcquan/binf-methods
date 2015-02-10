@@ -182,7 +182,7 @@ H(X) = H(X|Y) = H(Y) - H(Y|X) = I(X;Y) = I(Y;X)
 
 # 06 - Language Modeling
 
-Link to this slide [here](03_languagemodeling.pdf).
+Link to this slide [here](06_languagemodeling.pdf).
 Link to Dan Jurafsky's NLP slides [here](http://web.stanford.edu/~jurafsky/NLPCourseraSlides.html)
 
 ## Introduction
