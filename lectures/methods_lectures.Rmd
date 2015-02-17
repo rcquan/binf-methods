@@ -7,6 +7,105 @@ output:
     toc: yes
 ---
 
+# 10 - Network Analysis
+
+## Characteristics
+
+* interconnected nodes
+* undirected vs. directed
+* different edge/vertex types
+* weights on vertex or edge
+
+### Undirected vs. Directed
+
+$G = (V, E)$
+
+where V = vertices, E = edges $(v_i, v_j) \in E$
+
+**Undirected** uses **degree of a node**.
+
+**Directed** uses **in-degree and out-degree**, incoming and outcoming edges from a node.
+
+### Paths
+
+$(v_1, v_2,...v_k)$
+
+$(v_i, v_j) \in E$
+
+A **simple or acyclic path** is a path in which no vertices are repeated. We do not travel to the same vertex twice (or more). A simple path includes a cy
+
+A **cyclic path** is a closed path. That is, we start and end at the same vertex. In the middle, we do not travel to any vertex twice.
+
+### Connected Graph
+
+[Link](http://mathworld.wolfram.com/ConnectedGraph.html)
+
+A graph is **connected** when there is a path between every pair of nodes. A graph that is not connected is **disconnected**.
+
+A **geodesic path** is the shortest path between two nodes. 
+
+The **diameter** of a path is the distance of the largest geodesic path(s).
+
+## Mathematical Representations
+
+### Adjacency Matrix
+
+[Link](http://mathworld.wolfram.com/AdjacencyMatrix.html)
+
+Let's say you have *n* nodes.
+
+$A[i, j] = 1 if (v_i, v_j) \in E$
+
+$i, j \in [1...n]$
+
+For an undirected graph, the adjacency matrix is symmetric. However, adjacency matrices can be very memory inefficient.
+
+### Adjacency List
+
+[Link](http://en.wikipedia.org/wiki/Adjacency_list)
+
+An adjacency list representation for a graph associates each vertex in the graph with the collection of its neighboring vertices or edges. 
+
+While the storage may be more memory efficient than its matrix counterpart, the lookup takes longer.
+
+**Example**
+
+How many paths of length $k$ exist between $v_i$ and $v_j$?
+
+$k$ ==> $A^{k}_{i,j}
+
+Essentially, we can multiply the adjacency matrices of two nodes to find the answer. See notebook for more details.
+
+## Node Centrality
+
+Goal: identify nodes in a graph that are "central".
+
+* Degree centrality - in-degree, out-degree, degree
+* [Betweeness centrality](http://en.wikipedia.org/wiki/Betweenness_centrality)
+* [Eigenvector centrality](http://en.wikipedia.org/wiki/Centrality#Using_the_adjacency_matrix_to_find_eigenvector_centrality)
+
+Intuition: we can measure the in-degree to see how central a node may be. However, it might also be important to keep track of the nodes receiving edges from this central node. Eigenvector centrality mesaures this importance, e.g. page rank. 
+
+$x_i = \frac{1}{\lambda}\sum\limits_{j/j->i}x_j$
+
+$x_i = \frac{1}{\lambda}\sum\limits_{j=1}^{n}A_{ij}x_j$
+
+$Ax = \lambda x$
+
+# 09 - Paper Discussion
+
+**Roark, Syntatic complexity measures for detecting Mild Cognitive Impairment**
+
+* measuring syntactical complexities to detect early onset of Alzheimer's
+* a means of longitudinal tracking
+* automation of extraction from audio recordings
+* a very good paper
+
+**Sarkar, Compound Comorbidities**
+
+* not a very good paper
+* algorithm sucked, so they had to create a smaller sample space
+
 # 08 - Association Rules
 
 Just a reminder: the relationship between mutual information and KL-divergence.

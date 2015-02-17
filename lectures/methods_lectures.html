@@ -69,6 +69,19 @@ img {
 
 <div id="TOC">
 <ul>
+<li><a href="#network-analysis">10 - Network Analysis</a><ul>
+<li><a href="#characteristics">Characteristics</a><ul>
+<li><a href="#undirected-vs.directed">Undirected vs. Directed</a></li>
+<li><a href="#paths">Paths</a></li>
+<li><a href="#connected-graph">Connected Graph</a></li>
+</ul></li>
+<li><a href="#mathematical-representations">Mathematical Representations</a><ul>
+<li><a href="#adjacency-matrix">Adjacency Matrix</a></li>
+<li><a href="#adjacency-list">Adjacency List</a></li>
+</ul></li>
+<li><a href="#node-centrality">Node Centrality</a></li>
+</ul></li>
+<li><a href="#paper-discussion">09 - Paper Discussion</a></li>
 <li><a href="#association-rules">08 - Association Rules</a><ul>
 <li><a href="#a-priori-algorithm-1994">A-priori Algorithm (1994)</a><ul>
 <li><a href="#key-terms">Key Terms</a></li>
@@ -161,6 +174,88 @@ img {
 </ul>
 </div>
 
+<div id="network-analysis" class="section level1">
+<h1>10 - Network Analysis</h1>
+<div id="characteristics" class="section level2">
+<h2>Characteristics</h2>
+<ul>
+<li>interconnected nodes</li>
+<li>undirected vs. directed</li>
+<li>different edge/vertex types</li>
+<li>weights on vertex or edge</li>
+</ul>
+<div id="undirected-vs.directed" class="section level3">
+<h3>Undirected vs. Directed</h3>
+<p><span class="math">\(G = (V, E)\)</span></p>
+<p>where V = vertices, E = edges <span class="math">\((v_i, v_j) \in E\)</span></p>
+<p><strong>Undirected</strong> uses <strong>degree of a node</strong>.</p>
+<p><strong>Directed</strong> uses <strong>in-degree and out-degree</strong>, incoming and outcoming edges from a node.</p>
+</div>
+<div id="paths" class="section level3">
+<h3>Paths</h3>
+<p><span class="math">\((v_1, v_2,...v_k)\)</span></p>
+<p><span class="math">\((v_i, v_j) \in E\)</span></p>
+<p>A <strong>simple or acyclic path</strong> is a path in which no vertices are repeated. We do not travel to the same vertex twice (or more). A simple path includes a cy</p>
+<p>A <strong>cyclic path</strong> is a closed path. That is, we start and end at the same vertex. In the middle, we do not travel to any vertex twice.</p>
+</div>
+<div id="connected-graph" class="section level3">
+<h3>Connected Graph</h3>
+<p><a href="http://mathworld.wolfram.com/ConnectedGraph.html">Link</a></p>
+<p>A graph is <strong>connected</strong> when there is a path between every pair of nodes. A graph that is not connected is <strong>disconnected</strong>.</p>
+<p>A <strong>geodesic path</strong> is the shortest path between two nodes.</p>
+<p>The <strong>diameter</strong> of a path is the distance of the largest geodesic path(s).</p>
+</div>
+</div>
+<div id="mathematical-representations" class="section level2">
+<h2>Mathematical Representations</h2>
+<div id="adjacency-matrix" class="section level3">
+<h3>Adjacency Matrix</h3>
+<p><a href="http://mathworld.wolfram.com/AdjacencyMatrix.html">Link</a></p>
+<p>Let’s say you have <em>n</em> nodes.</p>
+<p><span class="math">\(A[i, j] = 1 if (v_i, v_j) \in E\)</span></p>
+<p><span class="math">\(i, j \in [1...n]\)</span></p>
+<p>For an undirected graph, the adjacency matrix is symmetric. However, adjacency matrices can be very memory inefficient.</p>
+</div>
+<div id="adjacency-list" class="section level3">
+<h3>Adjacency List</h3>
+<p><a href="http://en.wikipedia.org/wiki/Adjacency_list">Link</a></p>
+<p>An adjacency list representation for a graph associates each vertex in the graph with the collection of its neighboring vertices or edges.</p>
+<p>While the storage may be more memory efficient than its matrix counterpart, the lookup takes longer.</p>
+<p><strong>Example</strong></p>
+<p>How many paths of length <span class="math">\(k\)</span> exist between <span class="math">\(v_i\)</span> and <span class="math">\(v_j\)</span>?</p>
+<p><span class="math">\(k\)</span> ==&gt; $A^{k}_{i,j}</p>
+<p>Essentially, we can multiply the adjacency matrices of two nodes to find the answer. See notebook for more details.</p>
+</div>
+</div>
+<div id="node-centrality" class="section level2">
+<h2>Node Centrality</h2>
+<p>Goal: identify nodes in a graph that are “central”.</p>
+<ul>
+<li>Degree centrality - in-degree, out-degree, degree</li>
+<li><a href="http://en.wikipedia.org/wiki/Betweenness_centrality">Betweeness centrality</a></li>
+<li><a href="http://en.wikipedia.org/wiki/Centrality#Using_the_adjacency_matrix_to_find_eigenvector_centrality">Eigenvector centrality</a></li>
+</ul>
+<p>Intuition: we can measure the in-degree to see how central a node may be. However, it might also be important to keep track of the nodes receiving edges from this central node. Eigenvector centrality mesaures this importance, e.g. page rank.</p>
+<p><span class="math">\(x_i = \frac{1}{\lambda}\sum\limits_{j/j-&gt;i}x_j\)</span></p>
+<p><span class="math">\(x_i = \frac{1}{\lambda}\sum\limits_{j=1}^{n}A_{ij}x_j\)</span></p>
+<p><span class="math">\(Ax = \lambda x\)</span></p>
+</div>
+</div>
+<div id="paper-discussion" class="section level1">
+<h1>09 - Paper Discussion</h1>
+<p><strong>Roark, Syntatic complexity measures for detecting Mild Cognitive Impairment</strong></p>
+<ul>
+<li>measuring syntactical complexities to detect early onset of Alzheimer’s</li>
+<li>a means of longitudinal tracking</li>
+<li>automation of extraction from audio recordings</li>
+<li>a very good paper</li>
+</ul>
+<p><strong>Sarkar, Compound Comorbidities</strong></p>
+<ul>
+<li>not a very good paper</li>
+<li>algorithm sucked, so they had to create a smaller sample space</li>
+</ul>
+</div>
 <div id="association-rules" class="section level1">
 <h1>08 - Association Rules</h1>
 <p>Just a reminder: the relationship between mutual information and KL-divergence.</p>
@@ -294,7 +389,7 @@ return set of $F_k$
 </div>
 <div id="language-modeling" class="section level1">
 <h1>06 - Language Modeling</h1>
-<p>Link to this slide <a href="03_languagemodeling.pdf">here</a>. Link to Dan Jurafsky’s NLP slides <a href="http://web.stanford.edu/~jurafsky/NLPCourseraSlides.html">here</a></p>
+<p>Link to this slide <a href="06_languagemodeling.pdf">here</a>. Link to Dan Jurafsky’s NLP slides <a href="http://web.stanford.edu/~jurafsky/NLPCourseraSlides.html">here</a></p>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
 <p>The goal of a probabilistic langugae model is to <strong>compute the probability of a sentence or sequence of words.</strong></p>
