@@ -69,6 +69,11 @@ img {
 
 <div id="TOC">
 <ul>
+<li><a href="#more-network-analysis">11 - More Network Analysis</a><ul>
+<li><a href="#triadic-closure">Triadic Closure</a></li>
+<li><a href="#bridges">Bridges</a></li>
+<li><a href="#girvan-newman-algorithm">Girvan-Newman Algorithm</a></li>
+</ul></li>
 <li><a href="#network-analysis">10 - Network Analysis</a><ul>
 <li><a href="#characteristics">Characteristics</a><ul>
 <li><a href="#undirected-vs.directed">Undirected vs. Directed</a></li>
@@ -174,6 +179,47 @@ img {
 </ul>
 </div>
 
+<div id="more-network-analysis" class="section level1">
+<h1>11 - More Network Analysis</h1>
+<div id="triadic-closure" class="section level2">
+<h2>Triadic Closure</h2>
+<p><a href="http://en.wikipedia.org/wiki/Triadic_closure">Link</a></p>
+<p>Triadic closure is the property among three nodes A, B, and C, such that if a strong tie exists between A-B and A-C, there is a weak or strong tie between B-C.</p>
+<p>One measure for the presence of a triadic closure is the <strong>clustering coefficient</strong> <span class="math">\(C_i\)</span></p>
+<p>if A-B, B-C - how likely that A-C exist in graph?</p>
+<p><span class="math">\(C_i = \frac{number \ of \ triangles \ connected \ at \ i}{number \ of \ triples \ centered \ at \ i}\)</span></p>
+<p>Graph = <span class="math">\(\frac{1}{n}\sum\limits_{i=1}^n C_i\)</span></p>
+</div>
+<div id="bridges" class="section level2">
+<h2>Bridges</h2>
+<p><a href="http://en.wikipedia.org/wiki/Bridge_%28interpersonal%29">Link</a></p>
+<p>In general, a bridge is a direct tie between nodes that would otherwise be in disconnected components of the graph. Local bridges are ties between two nodes in a social graph that are the shortest route by which information might travel from those connected to one to those connected to the other.</p>
+</div>
+<div id="girvan-newman-algorithm" class="section level2">
+<h2>Girvan-Newman Algorithm</h2>
+<p>A hierarchical method used to detect communities in complex systems.</p>
+<p>1, The betweenness of all existing edges in the network is calculated first.<br />2. The edge(s) with the highest betweenness is removed.<br />3. The betweenness of all edges affected by the removal is recalculated.<br />4. Steps 2 and 3 are repeated until no edges remain.</p>
+<p>Other possible stopping criteria: number of edges, number of people, number of communities.</p>
+<p><strong>Edge betweeness</strong> of an edge is the number of shortest paths between pairs of nodes that run along it. In other words, it is the number of shortest paths in the graph that go through the edge. Thus, the edges connecting communities will have high edge betweenness.</p>
+<p>Another way of thinking about edge betweeness: if A, B belong to components, path between them, i.e. there is no “fluid” passing between them. If A, B are connected through a many equally shortest paths, 1 unit of fluid goes through, divided equally across its shortest paths.</p>
+<p>For each node A in graph:</p>
+<ol style="list-style-type: decimal">
+<li>perform BFS originating in A</li>
+<li>determine the # of shortest paths from A to all the nodes</li>
+<li>based on the these, determine the amount of flow from A to each other node.
+<ul>
+<li>For a node X in the BFS graph:
+<ul>
+<li>add all the units of fluid propagated from below</li>
+<li>add 1 unit</li>
+<li>pass the fluid up to X’s parents in proportion of the the number of shortest paths.</li>
+</ul></li>
+</ul></li>
+</ol>
+<p><strong>Breadth First Search (BFS)</strong></p>
+<p>A strategy for searching in a graph when search is limited to essentially two operations: (a) visit and inspect a node of a graph; (b) gain access to visit the nodes that neighbor the currently visited node. The BFS begins at a root node and inspects all the neighboring nodes. Then for each of those neighbor nodes in turn, it inspects their neighbor nodes which were unvisited, and so on.</p>
+</div>
+</div>
 <div id="network-analysis" class="section level1">
 <h1>10 - Network Analysis</h1>
 <div id="characteristics" class="section level2">

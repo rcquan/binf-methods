@@ -6,6 +6,56 @@ output:
   html_document:
     toc: yes
 ---
+# 11 - More Network Analysis
+
+## Triadic Closure
+
+[Link](http://en.wikipedia.org/wiki/Triadic_closure)
+
+Triadic closure is the property among three nodes A, B, and C, such that if a strong tie exists between A-B and A-C, there is a weak or strong tie between B-C.
+
+One measure for the presence of a triadic closure is the **clustering coefficient** $C_i$ 
+
+if A-B, B-C - how likely that A-C exist in graph?
+
+$C_i = \frac{number \ of \ triangles \ connected \ at \ i}{number \ of \ triples \ centered \ at \ i}$
+
+Graph = $\frac{1}{n}\sum\limits_{i=1}^n C_i$
+
+## Bridges
+
+[Link](http://en.wikipedia.org/wiki/Bridge_%28interpersonal%29)
+
+In general, a bridge is a direct tie between nodes that would otherwise be in disconnected components of the graph. Local bridges are ties between two nodes in a social graph that are the shortest route by which information might travel from those connected to one to those connected to the other.
+
+## Girvan-Newman Algorithm
+
+A hierarchical method used to detect communities in complex systems.
+
+1, The betweenness of all existing edges in the network is calculated first.  
+2. The edge(s) with the highest betweenness is removed.  
+3. The betweenness of all edges affected by the removal is recalculated.  
+4. Steps 2 and 3 are repeated until no edges remain.  
+
+Other possible stopping criteria: number of edges, number of people, number of communities. 
+
+**Edge betweeness** of an edge is the number of shortest paths between pairs of nodes that run along it. In other words, it is the number of shortest paths in the graph that go through the edge. Thus, the edges connecting communities will have high edge betweenness.
+
+Another way of thinking about edge betweeness: if A, B belong to \neq components, \not\in path between them, i.e. there is no "fluid" passing between them. If A, B are connected through a many equally shortest paths, 1 unit of fluid goes through, divided equally across its shortest paths.
+
+For each node A in graph:
+
+1. perform BFS originating in A
+2. determine the # of shortest paths from A to all the nodes
+3. based on the these, determine the amount of flow from A to each other node.
+    * For a node X in the BFS graph:
+        * add all the units of fluid propagated from below
+        * add 1 unit
+        * pass the fluid up to X's parents in proportion of the the number of shortest paths.
+
+**Breadth First Search (BFS)**
+
+A strategy for searching in a graph when search is limited to essentially two operations: (a) visit and inspect a node of a graph; (b) gain access to visit the nodes that neighbor the currently visited node. The BFS begins at a root node and inspects all the neighboring nodes. Then for each of those neighbor nodes in turn, it inspects their neighbor nodes which were unvisited, and so on.
 
 # 10 - Network Analysis
 
